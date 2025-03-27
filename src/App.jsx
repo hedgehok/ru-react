@@ -2,29 +2,37 @@ import { Routes, Route, Link, NavLink } from "react-router-dom";
 import "./App.css";
 import { Home } from "./pages/Home";
 import { Forms } from "./pages/Forms";
+import { Context } from "./pages/Context";
 import { Books } from "./pages/Books";
 import { Book } from "./pages/Book";
 import { NotFound } from "./pages/NotFound";
 import { BooksLayout } from "./layout/BooksLayout";
+import { Users } from "./pages/Users";
+import { AuthProvider } from "./context/AuthProvider";
+import { MainLayout } from "./layout/MainLayout";
+import { Login } from "./pages/Login";
+import { PrivateRoute } from "./components/PrivateRoute";
 
 function App() {
     return (
         <>
-            <ul>
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/forms">Forms</Link></li>
-                <li><NavLink to="/books" style={({ isActive }) => isActive ? {color: 'red'} : {}}>Books</NavLink></li>
-            </ul>
-            <Routes>
-                <Route path="/" element={<Home />}/>
-                <Route path="/forms" element={<Forms />}/>
-                <Route path="/books" element={<BooksLayout />}>
-                    <Route index element={<Books />}/>
-                    <Route path=":id" element={<Book />}/>
-                    <Route path=":id/:img?" element={<Book />}/>
-                </Route>
-                <Route path="*" element={<NotFound />}/>
-            </Routes>
+            <AuthProvider>
+                <Routes>
+                    <Route element={<MainLayout />}>
+                        <Route path="/" element={<Home />}/>
+                        <Route path="/forms" element={<Forms />}/>
+                        <Route path="/users" element={<PrivateRoute><Users /></PrivateRoute>}/>
+                        <Route path="/context" element={<Context />}/>
+                        <Route path="/books" element={<BooksLayout />}>
+                            <Route index element={<Books />}/>
+                            <Route path=":id" element={<Book />}/>
+                            <Route path=":id/:img?" element={<Book />}/>
+                        </Route>
+                        <Route path="*" element={<NotFound />}/>
+                    </Route>
+                    <Route path="/login" element={<Login />}/>
+                </Routes>
+            </AuthProvider>
         </>
     );
 }
